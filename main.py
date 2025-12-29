@@ -12,8 +12,8 @@ from plotting import plot_GZ
 # -------------------------------------------------------------------
 
 OFFSET_FILE = "offsets_clean.xlsx"   # Offset table input
-DRAFT = 11.6                         # Ship draft (m)
-KG = 7.5                             # Centre of gravity above keel (m)
+DRAFT = float(input("Enter ship draft (m): "))                       # Ship draft (m)
+KG = float(input("Enter KG (m): "))                       # Centre of gravity above keel (m)
 HEEL_ANGLES = np.arange(0, 91, 5)    # Heel angles (degrees)
 
 
