@@ -10,3 +10,7 @@ This repository contains a polygon-based method to compute the ship GZ curve dir
 ## How to run
 ```bash
 python3 main.py
+
+When prompted, enter:
+- Ship draft (m)
+- KG (m)
