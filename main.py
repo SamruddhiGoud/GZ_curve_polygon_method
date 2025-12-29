@@ -6,27 +6,50 @@ from io_utils import read_offsets, save_results
 from hydrostatics import compute_KN
 from plotting import plot_GZ
 
-# Ensure output folder exists
-os.makedirs("output", exist_ok=True)
 
-OFFSET_FILE = "offsets_clean.xlsx"
-DRAFT = 11.6        # m
-KG = 7.5            # m
-HEEL_ANGLES = np.arange(0, 91, 5)
+# -------------------------------------------------------------------
+# User-defined inputs
+# -------------------------------------------------------------------
+
+OFFSET_FILE = "offsets_clean.xlsx"   # Offset table input
+DRAFT = 11.6                         # Ship draft (m)
+KG = 7.5                             # Centre of gravity above keel (m)
+HEEL_ANGLES = np.arange(0, 91, 5)    # Heel angles (degrees)
+
+
+# -------------------------------------------------------------------
+# Main execution
+# -------------------------------------------------------------------
 
 def main():
-    x, z, offsets = read_offsets(OFFSET_FILE)
+    """
+    Computes the GZ curve of a ship using a polygon-based hydrostatic method.
+    """
 
-    data = []
+    # Ensure output directory exists
+    os.makedirs("output", exist_ok=True)
+
+    # Read offset data
+    x_vals, z_vals, offsets = read_offsets(OFFSET_FILE)
+
+    results = []
+
+    # Loop over heel angles
     for heel in HEEL_ANGLES:
-        KN = compute_KN(x, z, offsets, heel, DRAFT)
+        KN = compute_KN(x_vals, z_vals, offsets, heel, DRAFT)
         GZ = KN - KG * np.sin(np.radians(heel))
-        data.append([heel, KN, GZ])
+        results.append([heel, KN, GZ])
 
-    df = pd.DataFrame(data, columns=["Heel (deg)", "KN (m)", "GZ (m)"])
+    # Store results in a table
+    df = pd.DataFrame(
+        results,
+        columns=["Heel (deg)", "KN (m)", "GZ (m)"]
+    )
 
+    # Save and plot results
     save_results(df, "output/GZ_table.xlsx")
     plot_GZ(df, "output/GZ_curve.png")
+
 
 if __name__ == "__main__":
     main()
